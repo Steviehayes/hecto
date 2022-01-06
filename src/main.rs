@@ -1,10 +1,19 @@
-use std::io::{self, Read};
-  fn main() {
-    for number in io::stdin().bytes() {
-        let character:char = number.unwrap() as char;
-        println!("Hello {}", character);
-        if character == 'q' {
+use std::io::{self, stdout, Read};
+use termion::raw::IntoRawMode;
+
+fn main() {
+    let _stdout = stdout().into_raw_mode().unwrap();
+
+    for b in io::stdin().bytes() {
+        let b = b.unwrap();
+        let c = b as char;
+        if c.is_control() {
+            println!("{:?} \r", b);
+        } else {
+            println!("{:?} ({})\r", b, c);
+        }
+        if c == 'q' {
             break;
-     }
-    } 
-  }
+        }
+    }
+}
